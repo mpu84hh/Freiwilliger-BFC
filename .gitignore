@@ -1,0 +1,19 @@
+# Secrets & variables d'environnement
+.env
+.env.*
+*.env
+
+# Paramètres locaux Claude Code (peuvent contenir des clés/chemins locaux)
+.claude/settings.local.json
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Node / Python (pour les futures étapes V2)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+dist/
+build/
