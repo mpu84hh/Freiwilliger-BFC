@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BFC-Talentkarte — Buchholzer Fußball Club e.V.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-dark:    #0d1b2a;
+      --color-navy:    #1c2a4a;
+      --color-blue:    #00aafb;
+      --color-yellow:  #fed584;
+      --color-text:    #202124;
+      --color-muted:   #656565;
+      --color-light:   #f5f5f7;
+      --color-border:  #dadadd;
+      --color-white:   #ffffff;
+      --color-error:   #d63637;
+      --color-success: #69c33b;
+
+      --font-heading: 'Poppins', sans-serif;
+      --font-body:    'Ubuntu', sans-serif;
+
+      --radius: 4px;
+      --shadow: 0 2px 12px rgba(0,0,0,0.10);
+      --max-w: 960px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--color-text);
+      background: var(--color-white);
+      line-height: 1.65;
+    }
+
+    a { color: var(--color-blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ─── Utility ──────────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── HEADER ───────────────────────────────────────────────── */
+    .site-header {
+      background: var(--color-dark);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .site-logo .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: var(--color-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--color-white);
+      letter-spacing: 0.05em;
+    }
+
+    .site-logo .logo-name {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--color-white);
+      line-height: 1.2;
+    }
+
+    .site-logo .logo-name small {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      list-style: none;
+    }
+
+    .site-nav a {
+      color: rgba(255,255,255,0.75);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      transition: color 0.2s, background 0.2s;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover,
+    .site-nav a.active {
+      color: var(--color-white);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .site-nav a.active {
+      color: var(--color-blue);
+    }
+
+    /* ─── BREADCRUMB ───────────────────────────────────────────── */
+    .breadcrumb {
+      background: var(--color-navy);
+      padding: 10px 0;
+    }
+
+    .breadcrumb-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .breadcrumb-inner a { color: rgba(255,255,255,0.7); }
+    .breadcrumb-inner a:hover { color: var(--color-white); }
+    .breadcrumb-inner .sep { color: rgba(255,255,255,0.3); }
+    .breadcrumb-inner .current { color: var(--color-yellow); font-weight: 500; }
+
+    /* ─── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      background:
+        linear-gradient(
+          160deg,
+          rgba(0,26,51,0.92) 0%,
+          rgba(13,27,42,0.85) 60%,
+          rgba(0,80,130,0.70) 100%
+        ),
+        url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1600&q=80') center/cover no-repeat;
+      min-height: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 64px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.015) 60px,
+        rgba(255,255,255,0.015) 61px
+      );
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--color-yellow);
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      color: var(--color-white);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+
+    .hero h1 span {
+      color: var(--color-blue);
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-heading);
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 600;
+      color: var(--color-yellow);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.3);
+    }
+
+    /* ─── INTRO SECTION ────────────────────────────────────────── */
+    .intro {
+      padding: 64px 0 48px;
+      background: var(--color-white);
+    }
+
+    .intro-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-blue);
+      background: rgba(0,170,251,0.08);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .intro h2 {
+      font-family: var(--font-heading);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 20px;
+      line-height: 1.25;
+    }
+
+    .intro p {
+      font-size: 1.05rem;
+      color: var(--color-muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .intro-highlights {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+      padding-top: 36px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .highlight-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .highlight-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(0,170,251,0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .highlight-item span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-muted);
+      max-width: 120px;
+    }
+
+    /* ─── FORM SECTION ─────────────────────────────────────────── */
+    .form-section {
+      padding: 0 0 80px;
+      background: var(--color-light);
+    }
+
+    .form-section-header {
+      background: var(--color-navy);
+      padding: 48px 24px;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .form-section-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .form-section-header p {
+      color: rgba(255,255,255,0.65);
+      font-size: 15px;
+    }
+
+    .form-card {
+      background: var(--color-white);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .form-block {
+      padding: 40px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .form-block:last-child {
+      border-bottom: none;
+    }
+
+    .form-block-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--color-blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-block-title .block-num {
+      width: 28px;
+      height: 28px;
+      background: var(--color-blue);
+      color: var(--color-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-row.full { grid-template-columns: 1fr; }
+    .form-row.trio { grid-template-columns: 1fr 1fr 1fr; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+
+    .form-group label .required {
+      color: var(--color-error);
+      margin-left: 3px;
+    }
+
+    .form-group label .optional {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-muted);
+      margin-left: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--color-text);
+      background: var(--color-white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--color-blue);
+      box-shadow: 0 0 0 3px rgba(0,170,251,0.15);
+    }
+
+    .form-control.error {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px rgba(214,54,55,0.10);
+    }
+
+    textarea.form-control {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field-error {
+      font-size: 12px;
+      color: var(--color-error);
+      display: none;
+    }
+
+    .form-group.has-error .field-error { display: block; }
+    .form-group.has-error .form-control { border-color: var(--color-error); }
+
+    /* ─── Checkboxes ─────────────────────────────────────────── */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: var(--color-white);
+    }
+
+    .checkbox-item:hover {
+      border-color: var(--color-blue);
+      background: rgba(0,170,251,0.04);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      cursor: pointer;
+      accent-color: var(--color-blue);
+      margin-top: 1px;
+    }
+
+    .checkbox-item input[type="checkbox"]:checked + .checkbox-label {
+      color: var(--color-dark);
+    }
+
+    .checkbox-item:has(input:checked) {
+      border-color: var(--color-blue);
+      background: rgba(0,170,251,0.06);
+    }
+
+    .checkbox-label {
+      font-size: 14px;
+      color: var(--color-muted);
+      line-height: 1.45;
+      cursor: pointer;
+    }
+
+    .checkbox-grid.financial { grid-template-columns: 1fr; }
+
+    /* ─── GDPR ───────────────────────────────────────────────── */
+    .gdpr-box {
+      background: rgba(0,170,251,0.04);
+      border: 1px solid rgba(0,170,251,0.25);
+      border-radius: 6px;
+      padding: 20px 24px;
+    }
+
+    .gdpr-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .gdpr-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      cursor: pointer;
+      accent-color: var(--color-blue);
+      margin-top: 2px;
+    }
+
+    .gdpr-text {
+      font-size: 14px;
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    .gdpr-text a { color: var(--color-blue); font-weight: 500; }
+
+    /* ─── Submit ─────────────────────────────────────────────── */
+    .form-submit {
+      padding: 32px 40px 40px;
+      background: var(--color-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .form-note {
+      font-size: 13px;
+      color: var(--color-muted);
+    }
+
+    .form-note strong { color: var(--color-error); }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--color-blue);
+      color: var(--color-white);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      padding: 14px 36px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(0,170,251,0.35);
+    }
+
+    .btn-submit:hover {
+      background: #009de6;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(0,170,251,0.45);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    .btn-submit svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ─── SUCCESS MESSAGE ──────────────────────────────────────── */
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 64px 40px;
+    }
+
+    .form-success .success-icon {
+      width: 72px;
+      height: 72px;
+      background: var(--color-success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 32px;
+    }
+
+    .form-success h3 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      margin-bottom: 12px;
+    }
+
+    .form-success p {
+      color: var(--color-muted);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* ─── CONTACT SECTION ──────────────────────────────────────── */
+    .contact {
+      background: var(--color-dark);
+      padding: 64px 0;
+    }
+
+    .contact .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .contact-info h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-white);
+      margin-bottom: 8px;
+    }
+
+    .contact-info .club-name {
+      font-size: 14px;
+      color: var(--color-yellow);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+    }
+
+    .contact-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .contact-detail-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .contact-detail-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.5;
+    }
+
+    .contact-detail-text a {
+      color: var(--color-blue);
+    }
+
+    .contact-cta {
+      text-align: right;
+    }
+
+    .contact-cta p {
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .btn-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 2px solid var(--color-blue);
+      color: var(--color-blue);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-contact:hover {
+      background: var(--color-blue);
+      color: var(--color-white);
+      text-decoration: none;
+    }
+
+    /* ─── FOOTER ───────────────────────────────────────────────── */
+    .site-footer {
+      background: #070f18;
+      padding: 24px 0;
+      text-align: center;
+    }
+
+    .site-footer p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .site-footer a { color: rgba(255,255,255,0.5); }
+    .site-footer a:hover { color: var(--color-white); }
+
+    /* ─── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .site-nav { display: none; }
+
+      .form-row,
+      .form-row.trio {
+        grid-template-columns: 1fr;
+      }
+
+      .checkbox-grid { grid-template-columns: 1fr; }
+
+      .form-block { padding: 28px 20px; }
+
+      .form-submit {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 24px 20px;
+      }
+
+      .btn-submit { justify-content: center; }
+
+      .contact .container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .contact-cta { text-align: left; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HEADER
+  ════════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="https://buchholzerfc.com/" class="site-logo">
+        <div class="logo-badge">BFC</div>
+        <div class="logo-name">
+          Buchholzer FC
+          <small>Buchholzer Fußball Club e.V.</small>
+        </div>
+      </a>
+      <nav>
+        <ul class="site-nav">
+          <li><a href="#">Teams</a></li>
+          <li><a href="#" class="active">Der Verein</a></li>
+          <li><a href="#">News</a></li>
+          <li><a href="#">Karriere</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       BREADCRUMB
+  ════════════════════════════════════════════════════════════ -->
+  <div class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a href="#">Startseite</a>
+      <span class="sep">›</span>
+      <a href="#">Der Verein</a>
+      <span class="sep">›</span>
+      <span class="current">BFC-Talentkarte</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <p class="hero-eyebrow">Buchholzer Fußball Club e.V.</p>
+    <h1>DIE <span>BFC</span>-TALENTKARTE</h1>
+    <p class="hero-subtitle">Dein Talent für BFC!</p>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       INTRO
+  ════════════════════════════════════════════════════════════ -->
+  <section class="intro">
+    <div class="intro-inner">
+      <span class="section-label">Mitmachen</span>
+      <h2>Jeder hat ein Talent — teile es mit uns!</h2>
+      <p>
+        Jeder kann sich bei BFC einbringen – mit Zeit, Ideen und ganz persönlichen Talenten.
+        Über die BFC-Talentkarte kannst du uns ganz einfach mitteilen, wie du den Verein
+        ehrenamtlich unterstützen möchtest.
+      </p>
+      <p>
+        Ob beim Kuchenbacken, beim Aufbau von Events, in der Gartenarbeit rund ums Stadion
+        oder mit deinen beruflichen Kenntnissen – bei BFC ist jede helfende Hand willkommen.
+        Füll einfach das folgende Formular aus, und wir melden uns bei dir, wenn dein Talent
+        gefragt ist.
+      </p>
+
+      <div class="intro-highlights">
+        <div class="highlight-item">
+          <div class="highlight-icon">🎂</div>
+          <span>Backen &amp; Grillen</span>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🎉</div>
+          <span>Events &amp; Feste</span>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🌿</div>
+          <span>Gartenarbeit</span>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">⚖️</div>
+          <span>Recht &amp; Finanzen</span>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🔧</div>
+          <span>Handwerk</span>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-icon">🤝</div>
+          <span>Sponsoring</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FORM SECTION
+  ════════════════════════════════════════════════════════════ -->
+  <section class="form-section">
+    <div class="form-section-header">
+      <h2>Deine Talentkarte ausfüllen</h2>
+      <p>Alle mit <strong style="color:var(--color-yellow)">*</strong> markierten Felder sind Pflichtfelder.</p>
+    </div>
+
+    <div class="container">
+      <div class="form-card">
+        <form id="talentkarte-form" novalidate>
+
+          <!-- ── Block 1: Persönliche Angaben ─────────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">1</span>
+              Persönliche Angaben
+            </h3>
+
+            <div class="form-row">
+              <div class="form-group" id="group-vorname">
+                <label for="vorname">Vorname <span class="required">*</span></label>
+                <input type="text" id="vorname" name="vorname" class="form-control"
+                       placeholder="Dein Vorname" autocomplete="given-name">
+                <span class="field-error">Bitte gib deinen Vornamen an.</span>
+              </div>
+              <div class="form-group" id="group-nachname">
+                <label for="nachname">Nachname <span class="required">*</span></label>
+                <input type="text" id="nachname" name="nachname" class="form-control"
+                       placeholder="Dein Nachname" autocomplete="family-name">
+                <span class="field-error">Bitte gib deinen Nachnamen an.</span>
+              </div>
+            </div>
+
+            <div class="form-row trio">
+              <div class="form-group">
+                <label for="mitgliedsnummer">
+                  Mitgliedsnummer <span class="optional">(optional)</span>
+                </label>
+                <input type="text" id="mitgliedsnummer" name="mitgliedsnummer"
+                       class="form-control" placeholder="z.B. 1234">
+              </div>
+              <div class="form-group">
+                <label for="mannschaft">
+                  Mannschaft / Team <span class="optional">(optional)</span>
+                </label>
+                <input type="text" id="mannschaft" name="mannschaft"
+                       class="form-control" placeholder="z.B. Herren 1, U17, Damen…">
+              </div>
+              <div class="form-group" id="group-email">
+                <label for="email">E-Mail-Adresse <span class="required">*</span></label>
+                <input type="email" id="email" name="email" class="form-control"
+                       placeholder="deine@email.de" autocomplete="email">
+                <span class="field-error">Bitte gib eine gültige E-Mail-Adresse an.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Block 2: Meine Talente ────────────────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">2</span>
+              Mein(e) Talent(e) <span style="color:var(--color-error);font-size:14px;margin-left:4px">*</span>
+            </h3>
+            <p style="font-size:14px;color:var(--color-muted);margin-bottom:20px">
+              Wähle alle Talente aus, die auf dich zutreffen. (Mindestens 1 Auswahl erforderlich.)
+            </p>
+
+            <div class="checkbox-grid" id="talents-grid">
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="kuchen_backen">
+                <span class="checkbox-label">🎂 Einen Kuchen backen? — Fragt mich ruhig.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="kuchen_verkaufen">
+                <span class="checkbox-label">🛍️ Ich verkaufe gern Kuchen oder Getränke beim nächsten Vereinsfest.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="grillen">
+                <span class="checkbox-label">🔥 Grillen macht mir großen Spaß!</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="kuenstlerisch">
+                <span class="checkbox-label">🎨 Ich bin künstlerisch / gestalterisch begabt.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="auf_abbau">
+                <span class="checkbox-label">🏗️ Auf- und Abbau bei Events — voll mein Ding!</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="organisation">
+                <span class="checkbox-label">🎉 Ich organisiere gerne Feste und Feiern.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="gartenarbeit">
+                <span class="checkbox-label">🌿 Mein Garten genügt mir nicht. Bei Gartenarbeit rund ums Stadion bin ich dabei.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="trainer_kontakt">
+                <span class="checkbox-label">⚽ Ich kenne jemanden, der / die vielleicht einen Trainerposten übernehmen würde.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="schul_ag">
+                <span class="checkbox-label">📚 Ich kenne jemanden, der / die tagsüber ein bisschen Zeit hat und eine Schul-AG im Ganztagsangebot übernehmen würde.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="rechtsfragen">
+                <span class="checkbox-label">⚖️ Ich kenne mich mit rechtlichen Fragen gut aus.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="zahlen_steuern">
+                <span class="checkbox-label">📊 Zahlen &amp; Steuern bringen mich nicht zum Schwitzen.</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="talent" value="handwerk">
+                <span class="checkbox-label">🔧 Handwerk? Einfach machen.</span>
+              </label>
+              <label class="checkbox-item" style="grid-column:1/-1">
+                <input type="checkbox" name="talent" value="heimspieltag">
+                <span class="checkbox-label">🏟️ Helfende Hand an Heimspieltagen im Stadion — Hier bin ich!</span>
+              </label>
+            </div>
+
+            <span class="field-error" id="talents-error"
+                  style="display:none;margin-top:12px;font-size:13px;color:var(--color-error)">
+              Bitte wähle mindestens ein Talent aus.
+            </span>
+          </div>
+
+          <!-- ── Block 3: Weitere Infos ─────────────────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">3</span>
+              Weitere Infos über dich
+            </h3>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label for="weitere_talente">
+                  Das kann ich außerdem noch gut <span class="optional">(optional)</span>
+                </label>
+                <textarea id="weitere_talente" name="weitere_talente" class="form-control"
+                          placeholder="Beschreibe weitere Fähigkeiten oder Talente, die nicht in der Liste stehen…"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="vernetzt">
+                  Ich bin vernetzt mit <span class="optional">(optional)</span>
+                </label>
+                <input type="text" id="vernetzt" name="vernetzt" class="form-control"
+                       placeholder="Vereine, Unternehmen, Netzwerke…">
+              </div>
+              <div class="form-group">
+                <label for="beruf">
+                  Das mache ich beruflich <span class="optional">(optional)</span>
+                </label>
+                <input type="text" id="beruf" name="beruf" class="form-control"
+                       placeholder="Dein Beruf oder deine Branche">
+              </div>
+            </div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label for="arbeitgeber">
+                  Mein Arbeitgeber heißt <span class="optional">(optional)</span>
+                </label>
+                <input type="text" id="arbeitgeber" name="arbeitgeber" class="form-control"
+                       placeholder="Name deines Unternehmens (freiwillig)">
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Block 4: Finanzielle Unterstützung ─────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">4</span>
+              Finanzielle Unterstützung <span class="optional" style="font-size:13px;font-weight:400;letter-spacing:0">(optional)</span>
+            </h3>
+            <p style="font-size:14px;color:var(--color-muted);margin-bottom:20px">
+              Kannst du dir vorstellen, BFC auch finanziell zu unterstützen?
+            </p>
+
+            <div class="checkbox-grid financial">
+              <label class="checkbox-item">
+                <input type="checkbox" name="finanziell" value="sponsoring_unternehmen">
+                <span class="checkbox-label">
+                  🏢 Ich bin verantwortlich für ein Unternehmen und kann mir vorstellen, BFC mit einem
+                  Sponsoring oder einer Spende zu unterstützen. Kontaktiert mich gern für weitere Infos!
+                </span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="finanziell" value="arbeitgeber_fragen">
+                <span class="checkbox-label">
+                  💼 Ich bin bereit, die zuständige Person bei meinem Arbeitgeber zu fragen, ob ein
+                  Sponsoring oder eine Spende denkbar ist.
+                </span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" name="finanziell" value="regelmaessige_spende">
+                <span class="checkbox-label">
+                  💛 Ich bin bereit, eine freiwillige und regelmäßige Spende für BFC zu leisten.
+                  Lasst mich wissen, wie wir damit vorgehen sollen.
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- ── Block 5: Sonstige Bemerkungen ─────────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">5</span>
+              Sonstige Bemerkungen
+            </h3>
+
+            <div class="form-group">
+              <label for="bemerkungen">
+                Gibt es noch etwas, das du uns mitteilen möchtest?
+                <span class="optional">(optional)</span>
+              </label>
+              <textarea id="bemerkungen" name="bemerkungen" class="form-control"
+                        placeholder="Weitere Anmerkungen, Verfügbarkeit, Einschränkungen…"
+                        style="min-height:120px"></textarea>
+            </div>
+          </div>
+
+          <!-- ── Block 6: DSGVO-Einwilligung ────────────────────── -->
+          <div class="form-block">
+            <h3 class="form-block-title">
+              <span class="block-num">6</span>
+              Datenschutz &amp; Einwilligung
+            </h3>
+
+            <div class="gdpr-box" id="group-gdpr">
+              <div class="gdpr-item">
+                <input type="checkbox" id="gdpr" name="gdpr" required>
+                <label for="gdpr" class="gdpr-text">
+                  <strong>Dürfen wir dich kontaktieren? <span style="color:var(--color-error)">*</span></strong><br>
+                  Ich bin damit einverstanden, dass der Buchholzer Fußball Club e.V. meine oben angegebenen
+                  Daten speichert und mich per E-Mail kontaktiert, wenn mein Talent für den Verein gefragt ist.
+                  Meine Daten werden nicht an Dritte weitergegeben und nicht zu Werbezwecken verwendet.
+                  Weitere Informationen findest du in unserer
+                  <a href="https://buchholzerfc.com/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>.
+                  Ich kann meine Einwilligung jederzeit widerrufen.
+                </label>
+              </div>
+              <span class="field-error" id="gdpr-error"
+                    style="display:none;margin-top:10px;font-size:13px;color:var(--color-error);padding-left:30px">
+                Bitte stimme der Datenschutzerklärung zu, um das Formular abzusenden.
+              </span>
+            </div>
+          </div>
+
+          <!-- ── Submit ─────────────────────────────────────────── -->
+          <div class="form-submit">
+            <p class="form-note">
+              <strong>*</strong> Pflichtfelder — alle anderen Felder sind freiwillig.
+            </p>
+            <button type="submit" class="btn-submit">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+              </svg>
+              Absenden
+            </button>
+          </div>
+
+          <!-- Success message (hidden by default) -->
+          <div class="form-success" id="form-success">
+            <div class="success-icon">✓</div>
+            <h3>Vielen Dank für deine Talentkarte!</h3>
+            <p>
+              Wir haben deine Eintragung erhalten und melden uns bei dir, sobald wir deine Unterstützung brauchen.
+              Du machst BFC besser — danke dafür! ⚽
+            </p>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       CONTACT SECTION
+  ════════════════════════════════════════════════════════════ -->
+  <section class="contact">
+    <div class="container">
+      <div class="contact-info">
+        <p class="club-name">BUCHHOLZER FUSSBALL CLUB E.V.</p>
+        <h2>Kontakt &amp; Adresse</h2>
+
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📍</div>
+          <div class="contact-detail-text">
+            Buchholzer Fußball Club e.V.<br>
+            Adresse wird bestätigt — siehe
+            <a href="https://buchholzerfc.com/der-verein/kontakt/" target="_blank">Kontaktseite</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">✉️</div>
+          <div class="contact-detail-text">
+            <a href="mailto:info@buchholzerfc.com">info@buchholzerfc.com</a>
+          </div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">🌐</div>
+          <div class="contact-detail-text">
+            <a href="https://buchholzerfc.com" target="_blank">buchholzerfc.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-cta">
+        <p>
+          Du hast Fragen zur Talentkarte oder möchtest dich direkt beim Verein melden?
+          Nutze unser Kontaktformular — wir freuen uns auf deine Nachricht!
+        </p>
+        <a href="https://buchholzerfc.com/der-verein/kontakt/" target="_blank" class="btn-contact">
+          Zum Kontaktformular →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <p>
+      © 2025 Buchholzer Fußball Club e.V. —
+      <a href="https://buchholzerfc.com/impressum/">Impressum</a> ·
+      <a href="https://buchholzerfc.com/datenschutz/">Datenschutz</a>
+    </p>
+  </footer>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       JS — Form Validation
+  ════════════════════════════════════════════════════════════ -->
+  <script>
+    const form = document.getElementById('talentkarte-form');
+
+    function setError(groupId, show) {
+      const el = document.getElementById(groupId);
+      if (!el) return;
+      if (show) el.classList.add('has-error');
+      else el.classList.remove('has-error');
+    }
+
+    function validateForm() {
+      let valid = true;
+
+      // Vorname
+      const vorname = document.getElementById('vorname');
+      if (!vorname.value.trim()) {
+        setError('group-vorname', true); valid = false;
+      } else {
+        setError('group-vorname', false);
+      }
+
+      // Nachname
+      const nachname = document.getElementById('nachname');
+      if (!nachname.value.trim()) {
+        setError('group-nachname', true); valid = false;
+      } else {
+        setError('group-nachname', false);
+      }
+
+      // Email
+      const email = document.getElementById('email');
+      const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRx.test(email.value.trim())) {
+        setError('group-email', true); valid = false;
+      } else {
+        setError('group-email', false);
+      }
+
+      // Talents (at least 1)
+      const talentsChecked = document.querySelectorAll('input[name="talent"]:checked');
+      const talentsError = document.getElementById('talents-error');
+      if (talentsChecked.length === 0) {
+        talentsError.style.display = 'block'; valid = false;
+      } else {
+        talentsError.style.display = 'none';
+      }
+
+      // GDPR
+      const gdpr = document.getElementById('gdpr');
+      const gdprError = document.getElementById('gdpr-error');
+      if (!gdpr.checked) {
+        gdprError.style.display = 'block'; valid = false;
+        document.getElementById('group-gdpr').style.borderColor = 'var(--color-error)';
+      } else {
+        gdprError.style.display = 'none';
+        document.getElementById('group-gdpr').style.borderColor = '';
+      }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!validateForm()) {
+        // Scroll to first error
+        const firstError = form.querySelector('.has-error, [style*="display: block"]');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Simulate submission (replace with actual AJAX / CF7 endpoint)
+      const submitBtn = form.querySelector('.btn-submit');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Wird gesendet…';
+
+      setTimeout(() => {
+        form.querySelectorAll('.form-block, .form-submit').forEach(el => {
+          el.style.display = 'none';
+        });
+        document.getElementById('form-success').style.display = 'block';
+        window.scrollTo({ top: document.querySelector('.form-card').offsetTop - 80, behavior: 'smooth' });
+      }, 1200);
+    });
+
+    // Live validation on blur
+    ['vorname', 'nachname', 'email'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('blur', () => validateForm());
+    });
+  </script>
+
+</body>
+</html>

@@ -17,3 +17,8 @@ __pycache__/
 .venv/
 dist/
 build/
+
+# Screenshots & artefacts Playwright (tests locaux)
+.playwright-mcp/
+*.png
+playwright-report/

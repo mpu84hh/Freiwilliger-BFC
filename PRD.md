@@ -1,117 +1,143 @@
-# CRM Dashboard — Cahier des charges
+# BFC-Talentkarte — Cahier des charges
 
 ## Contexte
 
-Application de suivi de prospects et clients pour un usage **solo**. L'utilisateur importe un export CSV depuis son CRM et obtient une vision instantanée de son activité commerciale.
+Page web intégrée au site existant du **Buchholzer Fußball Club e.V.** (`https://buchholzerfc.com/`). L'objectif est de permettre aux membres et sympathisants du club de signaler bénévolement leurs talents, compétences et disponibilités, afin que le club puisse solliciter leur aide de façon ciblée pour les tâches associatives du quotidien.
+
+La page est modélisée sur la **BU-Talentkarte** de HSV Barmbek-Uhlenhorst (`https://www.hsv-bu.de/talentkarte`), adaptée à l'identité visuelle et au contenu de BFC.
 
 ---
 
 ## Objectif principal
 
-Avoir une vision instantanée du **chiffre d'affaires** — ce qui rentre, ce qui peut rentrer, ce qui est en attente — pour décider où concentrer son énergie commerciale.
+Mettre en place un formulaire numérique simple permettant à chaque membre ou sympathisant de BFC de **déclarer volontairement ses talents** — qu'il s'agisse de cuisiner un gâteau, d'aider lors d'un événement, de connaître quelqu'un pour un poste d'entraîneur, ou de proposer un soutien financier — afin de constituer une **base de données interne des ressources bénévoles** du club.
 
 ---
 
-## Données source
+## Données collectées
 
-- **Format d'entrée** : fichier CSV exporté depuis un CRM
-- **Structure du CSV** (colonnes disponibles) :
-  - `Task Name` — Nom du contact et de l'entreprise
-  - `Status` — Statut du deal (`prospect`, `qualifié`, `négociation`, `gagné - en cours`, `à relancer`)
-  - `Date Created` — Date de création
-  - `Due Date` — Date d'échéance
-  - `Start Date` — Date de début
-  - `Assignees` — Commercial assigné
-  - `Priority` — Priorité (`high`, `medium`, `low`)
-  - `Tags` — Secteur d'activité
-  - `Task Content` — Notes libres
-  - `Montant Deal` — Valeur du deal en euros
+- **Identité** : Prénom, Nom, Numéro de membre (facultatif), Équipe / Team (facultatif)
+- **Contact** : Adresse e-mail
+- **Talents** : Sélection multiple parmi une liste de propositions (cases à cocher)
+- **Compétences libres** : Champ texte "Das kann ich außerdem noch gut"
+- **Réseau** : Champ texte "Ich bin vernetzt mit"
+- **Profession** : Champ texte "Das mache ich beruflich" + "Mein Arbeitgeber heißt"
+- **Soutien financier** : Sélection multiple (cases à cocher)
+- **Remarques** : Champ texte libre "Sonstige Bemerkungen"
+- **Consentement RGPD** : Case à cocher obligatoire
 
 ---
 
-## KPIs — Les 6 indicateurs clés
+## Talents proposés — Liste des cases à cocher
 
-| Indicateur | Pourquoi il déclenche l'action |
+| # | Libellé (adapté BFC) |
 |---|---|
-| **CA signé** (gagné en cours) | Savoir ce qui est déjà dans la poche |
-| **CA en négociation** | Le closing prioritaire, à surveiller chaque jour |
-| **CA à relancer** | L'argent qui dort — agir maintenant ou perdre le deal |
-| **Valeur moyenne d'un deal** | Savoir si on chasse trop petit ou si le pipeline est sain |
-| **Nombre de deals actifs** | Un seul chiffre pour sentir si le pipeline est plein ou vide |
-| **CA total du pipeline** | La vision macro — ce que vaut l'ensemble si tout se concrétise |
+| 1 | Einen Kuchen backen? - Fragt mich ruhig. |
+| 2 | Ich verkaufe gern Kuchen oder Getränke beim nächsten Vereinsfest. |
+| 3 | Grillen macht mir großen Spaß! |
+| 4 | Ich bin künstlerisch/gestalterisch begabt. |
+| 5 | Auf- und Abbau bei Events - voll mein Ding! |
+| 6 | Ich organisiere gerne Feste und Feiern. |
+| 7 | Mein Garten genügt mir nicht. Bei Gartenarbeit rund ums Stadion bin ich dabei. |
+| 8 | Ich kenne jemanden, der/die vielleicht einen Trainerposten übernehmen würde. |
+| 9 | Ich kenne jemanden, der/die tagsüber ein bisschen Zeit hat und eine Schul-AG im Ganztagsangebot übernehmen würde. |
+| 10 | Ich kenne mich mit rechtlichen Fragen gut aus. |
+| 11 | Zahlen & Steuern bringen mich nicht zum schwitzen. |
+| 12 | Handwerk? Einfach machen. |
+| 13 | Helfende Hand an Heimspieltagen im Stadion - Hier bin ich! |
 
-Ces 6 KPIs sont affichés **en haut de page**, toujours visibles.
+> ⚠️ Toutes les occurrences de "BU" dans les libellés originaux ont été remplacées par "BFC".
 
 ---
 
-## Vue principale : Kanban
+## Soutien financier — Liste des cases à cocher
 
-Colonnes dans l'ordre du cycle de vente :
+| # | Libellé (adapté BFC) |
+|---|---|
+| 1 | Ich bin verantwortlich für ein Unternehmen und kann mir vorstellen, BFC mit einem Sponsoring oder einer Spende zu unterstützen. Kontaktiert mich gern für weitere Infos! |
+| 2 | Ich bin bereit, die zuständige Person bei meinem Arbeitgeber zu fragen, ob ein Sponsoring oder eine Spende denkbar ist. |
+| 3 | Ich bin bereit, eine freiwillige und regelmäßige Spende für BFC zu leisten. Lasst mich wissen, wie wir damit vorgehen sollen. |
+
+---
+
+## Structure de la page
+
+La page est composée de **quatre sections** dans l'ordre suivant :
 
 ```
-Prospect → Qualifié → Négociation → À relancer → Gagné
+Hero / Titre  →  Texte d'introduction  →  Formulaire  →  Bloc contact
 ```
 
-### Contenu de chaque carte
-- Nom du contact / entreprise
-- Montant du deal (en €)
-- Priorité (badge visuel)
-- Date d'échéance
+### Section 1 — Hero
+- Image de bannière pleine largeur (à fournir par BFC)
+- Titre principal : **DIE BFC-TALENTKARTE**
+- Sous-titre : **DEIN TALENT FÜR BFC!**
 
-### Comportements
-- **Total cumulé par colonne** affiché en en-tête de colonne
-- **Alertes visuelles** : carte en rouge si la date d'échéance est dépassée, en orange si elle est proche
-- **Filtre par priorité** : toggle High / Medium / Low pour masquer le bruit
+### Section 2 — Texte d'introduction
+Texte court expliquant le concept : tout le monde peut contribuer avec son temps, ses idées et ses talents personnels. Copie finale à valider dans `CONTENT.md`.
+
+### Section 3 — Formulaire
+- Tous les champs listés ci-dessus dans **Données collectées**
+- Case de consentement RGPD avec lien vers la Datenschutzerklärung de BFC (URL à confirmer)
+- Bouton de soumission : **Absenden**
+
+### Section 4 — Bloc contact
+- Nom du club : Buchholzer Fußball Club e.V.
+- Adresse : à confirmer depuis `https://buchholzerfc.com/der-verein/kontakt/`
+- Lien vers la page de contact BFC
 
 ---
 
 ## Roadmap
 
-### 🚀 MVP — "Ça marche, c'est utile"
-> Objectif : avoir quelque chose d'utilisable en solo dès le premier jour
+### 🚀 MVP — "La page existe et fonctionne"
+> Objectif : une page opérationnelle intégrée au site BFC dès la première livraison
 
-- [ ] Upload d'un fichier CSV
-- [ ] Vue Kanban avec les colonnes de statut
-- [ ] Montant affiché sur chaque carte (nom, montant, priorité, échéance)
-- [ ] Total cumulé par colonne
-- [ ] Les 6 KPIs en haut de page
+- [ ] Page WordPress créée avec le bon slug (`/der-verein/talentkarte/` — à confirmer)
+- [ ] Hero image + titre + texte d'introduction
+- [ ] Formulaire avec tous les champs et cases à cocher
+- [ ] Consentement RGPD opérationnel avec lien Datenschutzerklärung
+- [ ] Soumission du formulaire par e-mail vers l'adresse désignée par BFC
+- [ ] Page intégrée dans la navigation de BFC (sous "Der Verein" — à confirmer)
+- [ ] Responsive desktop et mobile, cohérent avec l'identité visuelle du site
 
 ---
 
-### V1 — "C'est agréable à utiliser"
-> Objectif : rendre l'outil confortable au quotidien
+### V1 — "C'est agréable à gérer"
+> Objectif : faciliter le traitement des réponses reçues
 
-- [ ] Alertes visuelles sur les cartes (échéances dépassées en rouge/orange)
-- [ ] Filtre par priorité (High / Medium / Low)
-- [ ] Design mobile-friendly
-- [ ] Filtre par statut (masquer/afficher des colonnes)
+- [ ] Vue d'administration des soumissions (liste des réponses dans WordPress ou Google Sheets)
+- [ ] Export CSV des soumissions
+- [ ] Filtre par talent ou par type de soutien
+- [ ] Notification e-mail automatique de confirmation à l'auteur de la soumission
 
 ---
 
 ### V2 — "C'est puissant"
-> Objectif : passer d'un outil de lecture à un outil de pilotage
+> Objectif : croiser les données bénévoles avec les besoins du club
 
-- [ ] Connexion base de données (remplace l'upload CSV)
-- [ ] Modification d'un deal directement depuis le Kanban (statut, montant, notes)
-- [ ] Historique des changements de statut
-- [ ] Filtre par secteur / tag
+- [ ] Base de données des talents (remplace le simple envoi e-mail)
+- [ ] Validation du numéro de membre via le système d'adhésion de BFC
+- [ ] Tableau de bord interne : qui peut quoi, qui n'a pas encore été contacté
+- [ ] Filtre par équipe / secteur de bénévolat
 
 ---
 
-### 🔭 Hors périmètre — "Un jour peut-être"
-> À revisiter si l'usage évolue vers une équipe ou un besoin plus structuré
+### 🔭 Hors périmètre — "À revisiter"
+> À considérer si les besoins du club évoluent
 
-- Multi-utilisateurs / gestion d'équipe commerciale
-- Comparaison de deux exports dans le temps (évolution semaine/semaine)
-- Connexion API directe avec un CRM existant (HubSpot, Pipedrive…)
-- Notifications / rappels automatiques de relance
-- Export PDF ou rapport automatique
+- Espace membre privé avec profil de talent modifiable
+- Notification automatique quand un besoin correspond à un talent enregistré
+- Intégration avec un outil de gestion associative existant (ClubDesk, Vereinsflieger, etc.)
+- Multilingue (DE / TR / autres selon la composition du club)
 
 ---
 
 ## Contraintes techniques
 
-- Usage **solo**, pas de gestion multi-utilisateurs dans un premier temps
-- Données chargées **à la demande** via upload CSV (pas de temps réel)
-- Architecture pensée pour **migrer vers une base de données** en V2 sans tout reconstruire
-- Interface **responsive** (desktop prioritaire, mobile agréable)
+- **CMS** : WordPress — la page doit être construite nativement dans WordPress (Gutenberg ou page builder déjà en place sur le site)
+- **Formulaire** : utiliser le plugin WordPress déjà actif sur le site (Contact Form 7 / WPForms / Gravity Forms — à identifier avant implémentation)
+- **RGPD** : la case de consentement est obligatoire ; les données ne doivent pas être transmises à des tiers ni utilisées à des fins publicitaires
+- **Pas de gestion multi-utilisateurs** dans un premier temps
+- **Interface responsive** : desktop prioritaire, mobile agréable — cohérent avec le comportement existant de `buchholzerfc.com`
+- **Langue** : allemand (`de_DE`) intégralement
